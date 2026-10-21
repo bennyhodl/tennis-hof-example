@@ -59,7 +59,7 @@ def markdown(base: Path, head: Path) -> str:
     _, hm = _load(head)
     br, hr = bm["run"], hm["run"]
     snap = hr["snapshot"]
-    snap_txt = f"`{snap['name']}` (`{snap['sha256'][:12]}`)" if isinstance(snap, dict) else snap
+    snap_txt = f"`{snap['name']}` (`{snap['revision'][:12]}`)" if isinstance(snap, dict) else snap
     out = [
         "## Hall of Fame report",
         "",

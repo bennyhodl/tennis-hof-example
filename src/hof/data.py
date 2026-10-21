@@ -1,8 +1,9 @@
 """The data snapshot: which one we use, how to fetch it, and how to load it.
 
-`data/snapshot.toml` pins one snapshot by URL and SHA-256. Every run says which
-snapshot it used, so a ranking change is always a code change, never a silent
-change upstream.
+`data/snapshot.toml` pins one snapshot. Every run records its `name` and
+`revision`, so a ranking change is always a code change, never a silent change
+upstream. Only this module knows where snapshots live and how they download;
+swap the storage here and nothing else changes.
 """
 
 import hashlib
@@ -23,9 +24,9 @@ RAW = ROOT / "data" / "raw"
 
 @dataclass(frozen=True)
 class Snapshot:
-    name: str
+    name: str  # for people, e.g. "synthetic-v1"
     url: str
-    sha256: str
+    revision: str  # immutable id of the content: here the zip's SHA-256
 
     @property
     def path(self) -> Path:
@@ -41,17 +42,21 @@ def sha256(blob: bytes) -> str:
     return hashlib.sha256(blob).hexdigest()
 
 
+def is_fetched(snap: Snapshot) -> bool:
+    marker = snap.path / ".revision"
+    return marker.exists() and marker.read_text(encoding="utf-8") == snap.revision
+
+
 def fetch(snap: Snapshot) -> Path:
     """Download and unpack the snapshot once; refuse it if the hash is wrong."""
-    marker = snap.path / ".sha256"
-    if marker.exists() and marker.read_text(encoding="utf-8") == snap.sha256:
+    if is_fetched(snap):
         return snap.path
     with urllib.request.urlopen(snap.url) as resp:
         blob = resp.read()
-    if (got := sha256(blob)) != snap.sha256:
-        raise RuntimeError(f"{snap.name}: expected sha256 {snap.sha256}, downloaded {got}")
+    if (got := sha256(blob)) != snap.revision:
+        raise RuntimeError(f"{snap.name}: expected sha256 {snap.revision}, downloaded {got}")
     zipfile.ZipFile(io.BytesIO(blob)).extractall(snap.path)
-    marker.write_text(snap.sha256, encoding="utf-8")
+    (snap.path / ".revision").write_text(snap.revision, encoding="utf-8")
     return snap.path
 
 
