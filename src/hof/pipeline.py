@@ -77,8 +77,9 @@ def run(out: Path, path: Path | None = None) -> dict:
     """Run against the pinned snapshot (or `path`) and write results to `out`."""
     clock = Stopwatch()
     snap = data.pinned()
+    folder = path or data.fetch(snap)  # outside the stopwatch: a download is not our runtime
     with clock.stage("load"):
-        ds = data.load(path or data.fetch(snap))
+        ds = data.load(folder)
     rankings, metrics = rank(ds, clock)
     git = subprocess.run(
         ["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=data.ROOT
