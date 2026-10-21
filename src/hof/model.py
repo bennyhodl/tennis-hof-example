@@ -11,7 +11,7 @@ WEIGHTS = {
     "masters": 0.3,
     "tour_finals": 0.5,
     "titles": 0.05,
-    "weeks_no1": 0.01,
+    "weeks_no1": 0.05,
     "weeks_top10": 0.002,
     "win_pct": 2.0,
 }
