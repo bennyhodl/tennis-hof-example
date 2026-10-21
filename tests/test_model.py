@@ -17,6 +17,7 @@ career = st.fixed_dictionaries(
         "weeks_no1": st.integers(0, 450),
         "weeks_top10": st.integers(0, 1000),
         "win_pct": st.floats(0, 1),
+        "peak_elo": st.floats(0, 1500),
     }
 )
 
