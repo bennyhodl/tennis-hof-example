@@ -98,6 +98,16 @@ uv run hof diff results/main results/mine
 | **Report** | Every PR: runs main and the PR, posts the comparison | No |
 | **Publish** | Every merge to main: rebuilds the paper and rankings | — |
 
+## Example pull requests
+
+| PR | What it shows |
+|---|---|
+| [#1 Don't count the data download in the load time](https://github.com/bennyhodl/tennis-hof-example/pull/1) | A small bug fix. The report shows only the runtime moving |
+| [#2 Compute career stats with groupby](https://github.com/bennyhodl/tennis-hof-example/pull/2) | A refactor: no ranking changes, 80% faster. The golden test proves nothing moved |
+| [#3 Add peak Elo to the career score](https://github.com/bennyhodl/tennis-hof-example/pull/3) | A method change, open for review. CI went red on the golden test until the files were regenerated. Started from issue [#4](https://github.com/bennyhodl/tennis-hof-example/issues/4) |
+| [#5 Split the golden test](https://github.com/bennyhodl/tennis-hof-example/pull/5) | Fixing a workflow problem found while working on #3 |
+| [#6 Experiment: weight weeks at No. 1 higher](https://github.com/bennyhodl/tennis-hof-example/pull/6) | An idea that made things worse, closed with what we learned |
+
 ## Layout
 
 ```
@@ -111,7 +121,7 @@ src/hof/            the method, as a Python package
   paper.py            writes paper/generated/ and builds the PDF
 tests/              what must stay true; see the docstring in each file
   fixtures/data/      a small frozen dataset the tests run on
-  test_pipeline/      golden files: the expected rankings on the fixture
+  test_pipeline/      golden files: the expected rankings and metrics on the fixture
 data/snapshot.toml  which data snapshot we use (URL + SHA-256)
 paper/main.tex      the paper; numbers come from paper/generated/results.tex
 scripts/            setup scripts and the synthetic data generator
@@ -122,9 +132,10 @@ scripts/            setup scripts and the synthetic data generator
 - **Logic lives in `src/hof/`.** Notebooks are for looking at results; they
   import from `hof` and hold no logic. Outputs are stripped on commit.
 - **Never type a number into the paper.** Add it to `paper.py` and `\input` it.
-- **A method change changes the golden files.** If `test_rankings_match_golden_file`
-  fails and you meant it, run `uv run pytest --force-regen` and commit the
-  result. Reviewers read that diff.
+- **A method change changes the golden files.** If a `*_golden_file` test
+  fails and you meant it, run `uv run pytest --force-regen` (that run reports
+  failures while it rewrites the files; run `uv run pytest` again to see it
+  pass), then commit the result. Reviewers read that diff.
 - **Write your prediction in the PR before reading the report.** The interesting
   PRs are the ones where you were wrong.
 - **A PR that makes the method worse is still a result.** Close it with a note
