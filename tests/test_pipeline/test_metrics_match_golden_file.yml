@@ -14,4 +14,4 @@ model:
   precision: 0.6
   recall: 1.0
 split_year: 2010
-threshold: 8.7537
+threshold: 10.0227

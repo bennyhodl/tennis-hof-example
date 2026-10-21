@@ -33,7 +33,9 @@ snapshot. See \texttt{data/snapshot.toml} in the repository.
 
 \section{Method}
 A player's career score is a weighted sum of career statistics (major titles,
-finals, Masters titles, weeks at No.~1, win rate). A player is eligible five
+finals, Masters titles, weeks at No.~1, win rate) and peak Elo rating. Elo
+rewards beating strong opponents, which title counts miss; every player starts
+at 0 and we use $K=32$. A player is eligible five
 years after their last match. We choose the score threshold that maximises F1
 on players eligible up to \SplitYear{} (threshold \Threshold).
 

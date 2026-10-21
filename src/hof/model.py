@@ -14,6 +14,7 @@ WEIGHTS = {
     "weeks_no1": 0.01,
     "weeks_top10": 0.002,
     "win_pct": 2.0,
+    "peak_elo": 0.005,  # 200 Elo points of peak strength are worth one major title
 }
 
 # Players who left the tour this many years ago become eligible (ITHF rule).
