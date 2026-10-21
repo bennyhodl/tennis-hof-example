@@ -1,4 +1,5 @@
-# Required on every PR: lint, format and tests, on Linux and Windows.
+# Required on every PR: lint, format and tests on every OS the team uses.
+# Linux is what the report and publish workflows run on.
 name: CI
 
 on:
@@ -19,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
@@ -34,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
       GH_TOKEN: ${{ github.token }}

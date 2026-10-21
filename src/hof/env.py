@@ -1,5 +1,6 @@
 """Developer environment: set it up, diagnose it, and run the same checks CI runs."""
 
+import platform
 import shutil
 import subprocess
 import sys
@@ -22,12 +23,23 @@ def _ok(*cmd: str) -> bool:
         return False
 
 
+def _install(winget_id: str, brew: str) -> str:
+    """How to install a missing tool on this computer's OS."""
+    match platform.system():
+        case "Windows":
+            return f"winget install --id {winget_id} -e   (then open a new terminal)"
+        case "Darwin":
+            return f"brew install {brew}   (no Homebrew yet? see https://brew.sh)"
+        case _:
+            return f"install {brew} with your package manager"
+
+
 # (what we check, how to check it, how to fix it)
 CHECKS: list[tuple[str, Callable[[], bool], str]] = [
     (
         "git is installed",
         lambda: shutil.which("git") is not None,
-        "Install Git: winget install --id Git.Git -e   (then open a new terminal)",
+        _install("Git.Git", "git"),
     ),
     (
         "git knows your name",
@@ -42,7 +54,7 @@ CHECKS: list[tuple[str, Callable[[], bool], str]] = [
     (
         "GitHub CLI is installed",
         lambda: shutil.which("gh") is not None,
-        "Install it: winget install --id GitHub.cli -e   (then open a new terminal)",
+        _install("GitHub.cli", "gh"),
     ),
     ("GitHub CLI is logged in", lambda: _ok("gh", "auth", "status"), "gh auth login"),
     (
