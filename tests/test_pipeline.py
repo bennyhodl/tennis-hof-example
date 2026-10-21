@@ -12,9 +12,15 @@ from hypothesis import strategies as st
 from hof import data, pipeline
 
 
-def test_rankings_match_golden_file(ds, dataframe_regression, data_regression):
-    rankings, metrics = pipeline.rank(ds)
+# One golden file per test: `--force-regen` stops a test at its first rewrite,
+# so two checks in one test would need two runs to regenerate.
+def test_rankings_match_golden_file(ds, dataframe_regression):
+    rankings, _ = pipeline.rank(ds)
     dataframe_regression.check(rankings)
+
+
+def test_metrics_match_golden_file(ds, data_regression):
+    _, metrics = pipeline.rank(ds)
     data_regression.check(metrics)
 
 
