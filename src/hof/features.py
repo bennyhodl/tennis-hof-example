@@ -21,33 +21,32 @@ COLUMNS = [
 
 
 def career_stats(ds: Dataset) -> pd.DataFrame:
-    stats = {pid: dict.fromkeys(COLUMNS, 0) for pid in ds.players["player_id"]}
-    for _, m in ds.matches.iterrows():
-        year = m["tourney_date"] // 10000
-        for pid, won in ((m["winner_id"], True), (m["loser_id"], False)):
-            s = stats[pid]
-            s["wins" if won else "losses"] += 1
-            s["first_year"] = min(s["first_year"] or year, year)
-            s["last_year"] = max(s["last_year"], year)
-        if m["round"] == "F":
-            w = stats[m["winner_id"]]
-            w["titles"] += 1
-            if m["tourney_level"] == "G":
-                w["slams"] += 1
-                w["slam_finals"] += 1
-                stats[m["loser_id"]]["slam_finals"] += 1
-            elif m["tourney_level"] == "M":
-                w["masters"] += 1
-            elif m["tourney_level"] == "F":
-                w["tour_finals"] += 1
-    for _, r in ds.rankings.iterrows():
-        s = stats[r["player_id"]]
-        s["weeks_top10"] += 1
-        if r["rank"] == 1:
-            s["weeks_no1"] += 1
+    m, r = ds.matches, ds.rankings
+    ids = pd.Index(ds.players["player_id"], name="player_id")
 
-    df = pd.DataFrame.from_dict(stats, orient="index")
-    df["win_pct"] = df["wins"] / (df["wins"] + df["losses"]).where(lambda n: n > 0)
-    df["win_pct"] = df["win_pct"].fillna(0.0)
-    df.index.name = "player_id"
+    def count(s: pd.Series) -> pd.Series:
+        return s.value_counts().reindex(ids, fill_value=0)
+
+    year = m["tourney_date"] // 10000
+    played = pd.DataFrame(
+        {"player_id": pd.concat([m["winner_id"], m["loser_id"]]), "year": pd.concat([year, year])}
+    )
+    span = played.groupby("player_id")["year"].agg(["min", "max"]).reindex(ids, fill_value=0)
+    finals = m[m["round"] == "F"]
+    slam_finals = finals[finals["tourney_level"] == "G"]
+
+    df = pd.DataFrame(index=ids)
+    df["slams"] = count(slam_finals["winner_id"])
+    df["slam_finals"] = count(pd.concat([slam_finals["winner_id"], slam_finals["loser_id"]]))
+    df["masters"] = count(finals.loc[finals["tourney_level"] == "M", "winner_id"])
+    df["tour_finals"] = count(finals.loc[finals["tourney_level"] == "F", "winner_id"])
+    df["titles"] = count(finals["winner_id"])
+    df["wins"] = count(m["winner_id"])
+    df["losses"] = count(m["loser_id"])
+    played_any = (df["wins"] + df["losses"]).where(lambda n: n > 0)
+    df["win_pct"] = (df["wins"] / played_any).fillna(0.0)
+    df["weeks_no1"] = count(r.loc[r["rank"] == 1, "player_id"])
+    df["weeks_top10"] = count(r["player_id"])
+    df["first_year"] = span["min"]
+    df["last_year"] = span["max"]
     return df[COLUMNS]
