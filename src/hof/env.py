@@ -22,12 +22,6 @@ def _ok(*cmd: str) -> bool:
         return False
 
 
-def _snapshot_ok() -> bool:
-    snap = data.pinned()
-    marker = snap.path / ".sha256"
-    return marker.exists() and marker.read_text(encoding="utf-8") == snap.sha256
-
-
 # (what we check, how to check it, how to fix it)
 CHECKS: list[tuple[str, Callable[[], bool], str]] = [
     (
@@ -56,7 +50,11 @@ CHECKS: list[tuple[str, Callable[[], bool], str]] = [
         lambda: (data.ROOT / _out("git", "rev-parse", "--git-path", "hooks/pre-commit")).is_file(),
         "uv run hof setup",
     ),
-    ("data snapshot is downloaded and verified", _snapshot_ok, "uv run hof setup"),
+    (
+        "data snapshot is downloaded and verified",
+        lambda: data.is_fetched(data.pinned()),
+        "uv run hof setup",
+    ),
     (
         "Tectonic (LaTeX) is available",
         lambda: paper.tectonic(install=False) is not None,

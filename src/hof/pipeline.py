@@ -87,7 +87,7 @@ def run(out: Path, path: Path | None = None) -> dict:
     commit = git.stdout.strip() if git.returncode == 0 else ""
     metrics["run"] = {
         "commit": commit,
-        "snapshot": {"name": snap.name, "sha256": snap.sha256} if path is None else str(path),
+        "snapshot": {"name": snap.name, "revision": snap.revision} if path is None else str(path),
         "python": platform.python_version(),
         "platform": platform.platform(terse=True),
         "seconds": clock.seconds,
