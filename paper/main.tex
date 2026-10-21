@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+
+% Every number below comes from generated/results.tex, which `hof paper`
+% writes from a pipeline run. Never type a result by hand.
+\input{generated/results.tex}
+
+\title{An Objective Ranking of ATP Players for the International Tennis Hall of Fame}
+\author{Example Team}
+\date{Draft}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We score every Open Era ATP career from match results and weekly rankings,
+fit a Hall of Fame threshold on players eligible up to \SplitYear, and test it
+on the \TestPlayers{} contenders who became eligible after that. This draft runs
+on synthetic data; the numbers are placeholders for the method, not findings.
+\end{abstract}
+
+\section{Introduction}
+The International Tennis Hall of Fame inducts players by vote~\citep{ithf}.
+We ask whether a transparent score built from on-court results can reproduce
+those votes, and where it disagrees.
+
+\section{Data}
+Match results, player records and weekly top-10 rankings, pinned to one data
+snapshot. See \texttt{data/snapshot.toml} in the repository.
+
+\section{Method}
+A player's career score is a weighted sum of career statistics (major titles,
+finals, Masters titles, weeks at No.~1, win rate). A player is eligible five
+years after their last match. We choose the score threshold that maximises F1
+on players eligible up to \SplitYear{} (threshold \Threshold).
+
+\section{Evaluation}
+Table~\ref{tab:metrics} compares the score with the Hall's own automatic-ballot
+rule on the \TestPlayers{} contenders who became eligible after \SplitYear{} and by \AsOf{}, of
+whom \TestInducted{} were inducted.
+
+\begin{table}[h]
+\centering
+\MetricsTable
+\caption{Agreement with real inductions on held-out years.}
+\label{tab:metrics}
+\end{table}
+
+\begin{table}[h]
+\centering
+\small
+\TopTable
+\caption{The fifteen highest career scores.}
+\label{tab:top}
+\end{table}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

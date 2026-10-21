@@ -1,0 +1,4 @@
+# The data every run uses. Change it only in a PR of its own (see data/README.md).
+name = "synthetic-v1"
+url = "https://github.com/bennyhodl/tennis-hof-example/releases/download/data-synthetic-v1/synthetic-v1.zip"
+sha256 = "6d16c746d8639ac4591ab14a1dfdaa86007ec76c2702e8305aa68b5d953a9b0b"

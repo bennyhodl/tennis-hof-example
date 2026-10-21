@@ -1,0 +1,17 @@
+as_of: 2025
+ithf_rule:
+  auc: 1.0
+  f1: 1.0
+  inducted: 3
+  players: 17
+  precision: 1.0
+  recall: 1.0
+model:
+  auc: 1.0
+  f1: 0.75
+  inducted: 3
+  players: 17
+  precision: 0.6
+  recall: 1.0
+split_year: 2010
+threshold: 8.7537
