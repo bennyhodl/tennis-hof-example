@@ -85,12 +85,12 @@ def doctor() -> int:
 
 
 def setup() -> int:
-    print("Installing the pre-commit hook...")
+    print("Installing the pre-commit hook...", flush=True)
     subprocess.run([sys.executable, "-m", "pre_commit", "install"], check=True, cwd=data.ROOT)
     snap = data.pinned()
-    print(f"Downloading data snapshot {snap.name}...")
+    print(f"Downloading data snapshot {snap.name}...", flush=True)
     data.fetch(snap)
-    print("Downloading Tectonic (LaTeX)...")
+    print("Downloading Tectonic (LaTeX)...", flush=True)
     paper.tectonic()
     print()
     return doctor()
