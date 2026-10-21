@@ -31,6 +31,6 @@ Always use `uv run`. Never `pip install`; add dependencies with `uv add <pkg>`
 
 - The method lives in `src/hof/`. Notebooks only import from it.
 - Every number in the paper comes from `paper.py`; never hard-code results in `.tex`.
-- Students use Windows: use `pathlib`, pass `encoding="utf-8"` to every
+- The team uses macOS and Windows: use `pathlib`, pass `encoding="utf-8"` to every
   `open`/`read_text`/`write_text`, and write CSVs with `lineterminator="\n"`.
 - Keep it plain: pandas, functions, a dataclass when needed. No frameworks.

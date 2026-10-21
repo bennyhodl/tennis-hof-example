@@ -14,6 +14,31 @@ request gets a report showing what it did to the rankings.
 
 ## First-time setup
 
+### macOS
+
+1. Open **Terminal**. If `brew --version` says "command not found", install
+   [Homebrew](https://brew.sh), the Mac package manager:
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+   When it finishes it prints **Next steps**: run the commands it shows, then
+   open a new Terminal window.
+2. Install Git and the GitHub CLI, and log in to GitHub:
+   ```bash
+   brew install git gh
+   gh auth login
+   ```
+3. Clone the repo and run the setup script:
+   ```bash
+   gh repo clone bennyhodl/tennis-hof-example
+   cd tennis-hof-example
+   bash scripts/setup.sh
+   ```
+
+The script installs [uv](https://docs.astral.sh/uv/), which installs the right
+Python and every package. You never install Python yourself. At the end it runs
+`hof doctor`, which lists anything still missing and the exact command to fix it.
+
 ### Windows
 
 1. Open **PowerShell** and install Git and the GitHub CLI:
@@ -32,16 +57,10 @@ request gets a report showing what it did to the rankings.
    powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
    ```
 
-The script installs [uv](https://docs.astral.sh/uv/), which installs the right
-Python and every package. You never install Python yourself. At the end it runs
-`hof doctor`, which lists anything still missing and the exact command to fix it.
+### Linux
 
-### macOS or Linux
-
-```bash
-gh repo clone bennyhodl/tennis-hof-example && cd tennis-hof-example
-bash scripts/setup.sh
-```
+Install `git` and `gh` with your package manager, run `gh auth login`, clone,
+then `bash scripts/setup.sh`.
 
 ### Nothing works on my machine
 
@@ -93,7 +112,7 @@ uv run hof diff results/main results/mine
 
 | Workflow | When | Blocks merge? |
 |---|---|---|
-| **CI / check** | Every PR, on Linux and Windows | Yes |
+| **CI / check** | Every PR, on Linux, macOS and Windows | Yes |
 | **CI / setup script** | Every PR: runs the setup script from scratch | No |
 | **Report** | Every PR: runs main and the PR, posts the comparison | No |
 | **Publish** | Every merge to main: rebuilds the paper and rankings | — |
