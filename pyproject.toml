@@ -6,8 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "numpy>=2.1",
-    "pandas>=2.2",
-    "pandera>=0.22",
+    "pandas>=3.1.0",
+    "pandera>=0.35.0",
     "scipy>=1.14",
 ]
 
@@ -16,12 +16,12 @@ hof = "hof.cli:main"
 
 [dependency-groups]
 dev = [
-    "hypothesis>=6.120",
+    "hypothesis>=6.170.13",
     "nbstripout>=0.8",
     "pre-commit>=4.0",
-    "pytest>=8.3",
+    "pytest>=9.2.0",
     "pytest-regressions>=2.6",
-    "ruff>=0.8",
+    "ruff>=0.17.3",
 ]
 
 [build-system]
